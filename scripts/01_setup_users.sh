@@ -1,16 +1,10 @@
 #!/usr/bin/env bash
-# ==============================================================================
-# scripts/01_setup_users.sh - Idempotent Service User, Group & Directory Setup
-# ==============================================================================
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 ENV_FILE="${ENV_FILE:-${PROJECT_ROOT}/.env}"
 
-# ------------------------------------------------------------------------------
-# Logging & Error Trapping
-# ------------------------------------------------------------------------------
 log_info() {
     printf '[INFO] [01_setup_users] %s\n' "$1"
 }
@@ -34,13 +28,9 @@ on_signal() {
 trap 'on_error $? ${LINENO}' ERR
 trap 'on_signal' INT TERM
 
-# ------------------------------------------------------------------------------
-# Load & Validate Environment Variables
-# ------------------------------------------------------------------------------
 load_env() {
     if [[ -f "${ENV_FILE}" ]]; then
         set -a
-        # shellcheck source=/dev/null
         source "${ENV_FILE}"
         set +a
     elif [[ -z "${APP_USER:-}" ]] || [[ -z "${APP_DIR:-}" ]] || [[ -z "${LOG_DIR:-}" ]]; then
@@ -93,9 +83,6 @@ validate_required_vars() {
     fi
 }
 
-# ------------------------------------------------------------------------------
-# Idempotent Group, User & Directory Provisioning
-# ------------------------------------------------------------------------------
 setup_group() {
     if getent group "${APP_GROUP}" >/dev/null 2>&1; then
         log_info "Group '${APP_GROUP}' already exists. Skipping."

@@ -1,21 +1,8 @@
-# ==============================================================================
-# configs/database.cnf - Konfigurasi Server & Client MariaDB (Multi-Tier)
-# ==============================================================================
-# Dipasang ke /etc/mysql/mariadb.conf.d/99-webapp.cnf (Debian/Ubuntu)
-# atau /etc/my.cnf.d/99-webapp.cnf (RHEL/AlmaLinux/Rocky) oleh 02_install_deps.sh.
-# Kredensial database tidak disimpan di file ini (lihat .env).
-# ==============================================================================
-
 [mysqld]
-# Isolasi jaringan: terima koneksi hanya dari loopback lokal
 bind-address = 127.0.0.1
 port = 3306
-
-# Dukungan karakter UTF-8 penuh
 character-set-server = utf8mb4
 collation-server = utf8mb4_unicode_ci
-
-# Tuning dasar & hardening
 max_connections = 100
 local_infile = 0
 

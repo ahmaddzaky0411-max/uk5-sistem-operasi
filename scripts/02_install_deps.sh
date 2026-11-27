@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-# ==============================================================================
-# scripts/02_install_deps.sh - Cross-Distro Package & Database Provisioning
-# ==============================================================================
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -9,9 +6,6 @@ PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 ENV_FILE="${ENV_FILE:-${PROJECT_ROOT}/.env}"
 TMP_DB_CNF=""
 
-# ------------------------------------------------------------------------------
-# Logging, Cleanup & Error Trapping
-# ------------------------------------------------------------------------------
 log_info() {
     printf '[INFO] [02_install_deps] %s\n' "$1"
 }
@@ -42,13 +36,9 @@ trap 'cleanup' EXIT
 trap 'on_error $? ${LINENO}' ERR
 trap 'on_signal' INT TERM
 
-# ------------------------------------------------------------------------------
-# Load & Validate Environment Variables
-# ------------------------------------------------------------------------------
 load_env() {
     if [[ -f "${ENV_FILE}" ]]; then
         set -a
-        # shellcheck source=/dev/null
         source "${ENV_FILE}"
         set +a
     elif [[ -z "${DB_NAME:-}" ]] || [[ -z "${DB_USER:-}" ]] || [[ -z "${DB_PASS:-}" ]]; then
@@ -128,9 +118,6 @@ validate_required_vars() {
     fi
 }
 
-# ------------------------------------------------------------------------------
-# Distro Detection (Supports Standalone Execution & deploy.sh Export)
-# ------------------------------------------------------------------------------
 detect_os_family() {
     if [[ -n "${OS_FAMILY:-}" ]]; then
         case "${OS_FAMILY}" in
@@ -149,7 +136,6 @@ detect_os_family() {
         exit 1
     fi
 
-    # shellcheck source=/dev/null
     source /etc/os-release
 
     case "${ID:-}" in
@@ -173,9 +159,6 @@ detect_os_family() {
     export OS_FAMILY
 }
 
-# ------------------------------------------------------------------------------
-# Idempotent Package Installation
-# ------------------------------------------------------------------------------
 install_debian_packages() {
     log_info "Updating apt cache and installing Debian/Ubuntu packages..."
     export DEBIAN_FRONTEND=noninteractive
@@ -235,9 +218,6 @@ install_packages() {
     esac
 }
 
-# ------------------------------------------------------------------------------
-# MariaDB Configuration & Idempotent Database Provisioning
-# ------------------------------------------------------------------------------
 run_db_admin() {
     local db_admin="$1"
     shift
