@@ -1,1 +1,0 @@
-# uk5-sistem-operasi
